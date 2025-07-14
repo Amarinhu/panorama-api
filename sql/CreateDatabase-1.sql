@@ -2,10 +2,17 @@ CREATE DATABASE panorama;
 
 USE PANORAMA;
 
+drop table TarefaAtributo;
+drop table Atributo;
+drop table Tarefa;
+drop table Grupo;
+drop table Perfil;
+drop table Usuario;
+
 CREATE TABLE Usuario (
 Id INT IDENTITY(1,1),
 Nome VARCHAR(100),
-Senha BINARY(60),
+Senha VARCHAR(60),
 PRIMARY KEY(Id)
 );
 
