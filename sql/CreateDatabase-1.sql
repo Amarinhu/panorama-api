@@ -1,66 +1,85 @@
 CREATE DATABASE panorama;
 
-USE PANORAMA;
+USE panorama;
 
-drop table TarefaAtributo;
-drop table Atributo;
-drop table Tarefa;
-drop table Grupo;
-drop table Perfil;
-drop table Usuario;
+DROP TABLE IF EXISTS tarefa_atributo;
+DROP TABLE IF EXISTS tarefa;
+DROP TABLE IF EXISTS atributo;
+DROP TABLE IF EXISTS grupo;
+DROP TABLE IF EXISTS perfil;
+DROP TABLE IF EXISTS usuario;
 
-CREATE TABLE Usuario (
-Id INT IDENTITY(1,1),
-Nome VARCHAR(100),
-Senha VARCHAR(60),
-PRIMARY KEY(Id)
+CREATE TABLE usuario (
+    id INT IDENTITY(1,1),
+    nome VARCHAR(100),
+    senha VARCHAR(60),
+    criado_em DATETIME,
+    atualizado_em DATETIME,
+    ativo BIT,
+    PRIMARY KEY(id)
 );
 
-CREATE TABLE Perfil (
-Id INT IDENTITY(1,1),
-IdUsuario INT,
-Nome VARCHAR(100),
-Foto VARCHAR(200),
-Email VARCHAR(100),
-Descricao VARCHAR(300),
-PRIMARY KEY(Id),
-FOREIGN KEY (IdUsuario) REFERENCES Usuario(Id)
+CREATE TABLE perfil (
+    id INT IDENTITY(1,1),
+    id_usuario INT,
+    nome VARCHAR(100),
+    foto VARCHAR(200),
+    email VARCHAR(100),
+    descricao VARCHAR(300),
+    criado_em DATETIME,
+    atualizado_em DATETIME,
+    ativo BIT,
+    PRIMARY KEY(id),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id)
 );
 
-CREATE TABLE Grupo (
-Id INT IDENTITY(1,1),
-IdPerfil INT,
-Nome VARCHAR(100),
-Descricao VARCHAR(300),
-PRIMARY KEY(Id)
+CREATE TABLE grupo (
+    id INT IDENTITY(1,1),
+    id_perfil INT,
+    nome VARCHAR(100),
+    descricao VARCHAR(300),
+    criado_em DATETIME,
+    atualizado_em DATETIME,
+    ativo BIT,
+    PRIMARY KEY(id),
+    FOREIGN KEY (id_perfil) REFERENCES perfil(id)
 );
 
-CREATE TABLE Tarefa (
-Id INT IDENTITY(1,1),
-IdGrupo INT,
-Nome VARCHAR(100),
-InicioTarefa DATETIME,
-FimTarefa DATETIME,
-Descricao VARCHAR(300),
-DIFICULDADE TINYINT,
-CONCLUIDO BIT,
-PRIMARY KEY(Id),
-FOREIGN KEY (IdGrupo) REFERENCES Grupo(Id)
+CREATE TABLE tarefa (
+    id INT IDENTITY(1,1),
+    id_grupo INT,
+    nome VARCHAR(100),
+    inicio DATETIME,
+    fim DATETIME,
+    descricao VARCHAR(300),
+    dificuldade TINYINT,
+    concluido BIT,
+    criado_em DATETIME,
+    atualizado_em DATETIME,
+    ativo BIT,
+    PRIMARY KEY(id),
+    FOREIGN KEY (id_grupo) REFERENCES grupo(id)
 );
 
-CREATE TABLE Atributo (
-Id INT IDENTITY(1,1),
-Nome VARCHAR(100),
-Icone VARCHAR(100),
-Xp INT,
-PRIMARY KEY(Id)
+CREATE TABLE atributo (
+    id INT IDENTITY(1,1),
+    nome VARCHAR(100),
+    icone VARCHAR(100),
+    xp INT,
+    criado_em DATETIME,
+    atualizado_em DATETIME,
+    ativo BIT,
+    PRIMARY KEY(id)
 );
 
-CREATE TABLE TarefaAtributo (
-Id INT IDENTITY(1,1),
-IdTarefa INT,
-IdAtributo INT,
-PRIMARY KEY(Id),
-FOREIGN KEY (IdTarefa) REFERENCES Tarefa(Id),
-FOREIGN KEY (IdAtributo) REFERENCES Atributo(Id)
+CREATE TABLE tarefa_atributo (
+    id INT IDENTITY(1,1),
+    id_tarefa INT,
+    id_atributo INT,
+    criado_em DATETIME,
+    atualizado_em DATETIME,
+    ativo BIT,
+    PRIMARY KEY(id),
+    FOREIGN KEY (id_tarefa) REFERENCES tarefa(id),
+    FOREIGN KEY (id_atributo) REFERENCES atributo(id)
 );
