@@ -1,13 +1,11 @@
 import { Request } from "tedious";
 import { getConnection } from "../config/db.js";
 
-export function getTarefas(callback){
+export function getAtributo(callback){
     const con = getConnection();
     const resultado = [];
     const sql =
-    `SELECT T.id, G.id, T.nome, T.descricao, T.dificuldade, T.concluido, T.ativo 
-        FROM TAREFA T
-    INNER JOIN GRUPO G ON T.ID_GRUPO = G.ID`
+    `SELECT id, nome, icone, xp, ativo FROM ATRIBUTO`
 
     const requisicao = new Request(sql, (err, qtdLinhas) => {
         if(err) {

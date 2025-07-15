@@ -11,7 +11,7 @@ const config = {
         database : "panorama",
         encrypt: false,
         trustServerCertificate : true,
-        port: 55000
+        port: 1433
     }
 }
 
