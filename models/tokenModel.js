@@ -56,12 +56,10 @@ export function postToken(callback, nome = null, email = null, senha) {
                 const difDataMs = dtAgora - dtTokenBr;
                 const difDataHrs = difDataMs / 1000 / 60 / 60;
 
-                console.log(`${dtAgora} - ${dtTokenBr} = ${difDataMs}`)
-                console.log(`${difDataMs} para Hrs = ${difDataHrs}`)
-                console.log(`Maior que 1 hora? = ${difDataHrs <= 1}`)
+                const tmpRestante = (1 * 60 * 60 * 1000) - difDataMs
 
                 if (difDataHrs <= 1) {
-                    callback(null, { idUsuario: idUsuario, token: primToken.token })
+                    callback(null, { idUsuario: idUsuario, token: primToken.token, tmpRestante :  tmpRestante })
                 } else {
                     deletaTokens(idUsuario)
                 }
@@ -106,12 +104,13 @@ export function postToken(callback, nome = null, email = null, senha) {
         INSERT INTO token (id_usuario, criado_em, token)
         VALUES (@id_usuario, GETDATE(), @token)
         `;
+        const tmpRestante = (1 * 60 * 60 * 1000)
 
         const reqInsert = new Request(sql, (err) => {
             if (err) {
                 callback(err);
             } else {
-                callback(null, { idUsuario: idUsuario, token: token });
+                callback(null, { idUsuario: idUsuario, token: token, tmpRestante :  tmpRestante });
             }
         })
 
