@@ -5,11 +5,13 @@ DROP TABLE IF EXISTS tarefa;
 DROP TABLE IF EXISTS atributo;
 DROP TABLE IF EXISTS grupo;
 DROP TABLE IF EXISTS perfil;
+DROP TABLE IF EXISTS token;
 DROP TABLE IF EXISTS usuario;
 
 CREATE TABLE usuario (
     id INT IDENTITY(1,1),
     nome VARCHAR(100) NOT NULL,
+	email VARCHAR(100),
     senha VARCHAR(60) NOT NULL,
     criado_em DATETIME NOT NULL,
     atualizado_em DATETIME NOT NULL,
@@ -17,9 +19,18 @@ CREATE TABLE usuario (
     PRIMARY KEY(id)
 );
 
+CREATE TABLE token (
+    id INT IDENTITY(1,1),
+    id_usuario INT NOT NULL,
+	token VARCHAR(128),
+	criado_em DATETIME NOT NULL,
+	PRIMARY KEY(id),
+	FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+);
+
 CREATE TABLE perfil (
     id INT IDENTITY(1,1),
-    id_usuario INT,
+    id_usuario INT NOT NULL,
     nome VARCHAR(100) NOT NULL,
     foto VARCHAR(200),
     email VARCHAR(100) NOT NULL,
@@ -76,9 +87,6 @@ CREATE TABLE tarefa_atributo (
     id INT IDENTITY(1,1),
     id_tarefa INT NOT NULL,
     id_atributo INT NOT NULL,
-    criado_em DATETIME NOT NULL,
-    atualizado_em DATETIME NOT NULL,
-    ativo BIT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (id_tarefa) REFERENCES tarefa(id),
     FOREIGN KEY (id_atributo) REFERENCES atributo(id)

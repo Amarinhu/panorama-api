@@ -40,12 +40,12 @@ SELECT TOP 1 @grupo_monthly = id FROM grupo WHERE nome = 'Monthly' AND id_perfil
 
 -- Atributos D&D
 INSERT INTO atributo (nome, icone, xp, criado_em, atualizado_em, ativo) VALUES
-    ('Força', 'icone-forca.png', 0, GETDATE(), GETDATE(), 1),
-    ('Destreza', 'icone-destreza.png', 0, GETDATE(), GETDATE(), 1),
-    ('Constituição', 'icone-constituicao.png', 0, GETDATE(), GETDATE(), 1),
-    ('Inteligência', 'icone-inteligencia.png', 0, GETDATE(), GETDATE(), 1),
-    ('Sabedoria', 'icone-sabedoria.png', 0, GETDATE(), GETDATE(), 1),
-    ('Carisma', 'icone-carisma.png', 0, GETDATE(), GETDATE(), 1);
+    ('Força', '.\img\icone-forca.png', 0, GETDATE(), GETDATE(), 1),
+    ('Destreza', '.\img\icone-destreza.png', 0, GETDATE(), GETDATE(), 1),
+    ('Constituição', '.\img\icone-constituicao.png', 0, GETDATE(), GETDATE(), 1),
+    ('Inteligência', '.\img\icone-inteligencia.png', 0, GETDATE(), GETDATE(), 1),
+    ('Sabedoria', '.\img\icone-sabedoria.png', 0, GETDATE(), GETDATE(), 1),
+    ('Carisma', '.\img\icone-carisma.png', 0, GETDATE(), GETDATE(), 1);
 
 DECLARE @forca INT, @destreza INT, @constituicao INT, @inteligencia INT, @sabedoria INT, @carisma INT;
 
@@ -66,10 +66,10 @@ DECLARE @tarefa1 INT, @tarefa2 INT;
 SELECT TOP 1 @tarefa1 = id FROM tarefa WHERE nome = 'Limpar garagem' AND id_grupo = @grupo_weekly;
 SELECT TOP 1 @tarefa2 = id FROM tarefa WHERE nome = 'Revisar orçamento' AND id_grupo = @grupo_weekly;
 
-INSERT INTO tarefa_atributo (id_tarefa, id_atributo, criado_em, atualizado_em, ativo) 
+INSERT INTO tarefa_atributo (id_tarefa, id_atributo) 
 VALUES 
-    (@tarefa1, @forca, GETDATE(), GETDATE(), 1),
-    (@tarefa2, @inteligencia, GETDATE(), GETDATE(), 1);
+    (@tarefa1, @forca),
+    (@tarefa2, @inteligencia);
 
 -- Tarefas Daily
 INSERT INTO tarefa (id_grupo, nome, inicio, fim, descricao, dificuldade, concluido, criado_em, atualizado_em, ativo, template, intervalo)
@@ -81,10 +81,10 @@ DECLARE @tarefa3 INT, @tarefa4 INT;
 SELECT TOP 1 @tarefa3 = id FROM tarefa WHERE nome = 'Meditar' AND id_grupo = @grupo_daily;
 SELECT TOP 1 @tarefa4 = id FROM tarefa WHERE nome = 'Alongar' AND id_grupo = @grupo_daily;
 
-INSERT INTO tarefa_atributo (id_tarefa, id_atributo, criado_em, atualizado_em, ativo) 
+INSERT INTO tarefa_atributo (id_tarefa, id_atributo) 
 VALUES 
-    (@tarefa3, @sabedoria, GETDATE(), GETDATE(), 1),
-    (@tarefa4, @destreza, GETDATE(), GETDATE(), 1);
+    (@tarefa3, @sabedoria),
+    (@tarefa4, @destreza);
 
 -- Tarefas Monthly
 INSERT INTO tarefa (id_grupo, nome, inicio, fim, descricao, dificuldade, concluido, criado_em, atualizado_em, ativo, template, intervalo)
@@ -97,13 +97,13 @@ SELECT TOP 1 @tarefa5 = id FROM tarefa WHERE nome = 'Reunião familiar' AND id_gr
 SELECT TOP 1 @tarefa6 = id FROM tarefa WHERE nome = 'Curso online' AND id_grupo = @grupo_monthly;
 
 -- Uma tarefa com 2 atributos
-INSERT INTO tarefa_atributo (id_tarefa, id_atributo, criado_em, atualizado_em, ativo) 
+INSERT INTO tarefa_atributo (id_tarefa, id_atributo) 
 VALUES 
-    (@tarefa5, @carisma, GETDATE(), GETDATE(), 1),
-    (@tarefa5, @sabedoria, GETDATE(), GETDATE(), 1);
+    (@tarefa5, @carisma),
+    (@tarefa5, @sabedoria);
 
 -- Outra tarefa com 2 atributos
-INSERT INTO tarefa_atributo (id_tarefa, id_atributo, criado_em, atualizado_em, ativo) 
+INSERT INTO tarefa_atributo (id_tarefa, id_atributo) 
 VALUES 
-    (@tarefa6, @inteligencia, GETDATE(), GETDATE(), 1),
-    (@tarefa6, @constituicao, GETDATE(), GETDATE(), 1);
+    (@tarefa6, @inteligencia),
+    (@tarefa6, @constituicao);

@@ -15,6 +15,4 @@ const config = {
     }
 }
 
-const porta = 3000
-
 export default config;

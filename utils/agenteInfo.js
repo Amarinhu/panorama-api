@@ -4,7 +4,8 @@ export function agenteInfo(req, method = 'GET') {
     const endpoint = req.originalUrl;
     const dateTime = new Date().toISOString()
 
-    const msg = `[INFO] - [${method}] 
+    const msg = `
+    [INFO] - [${method}] 
     DateTime: ${dateTime} 
     Endpoint: ${endpoint}
     Client: ${clientIp}

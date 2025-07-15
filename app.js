@@ -1,6 +1,7 @@
 import express from "express";
 import tarefaRoutes from "./routes/tarefaRoutes.js"
 import atributoRoutes from "./routes/atributoRoutes.js"
+import tokenRoutes from "./routes/tokenRoutes.js"
 import home from "./routes/homeRoutes.js"
 import { conectaDb } from "./config/db.js"
 import swagger from "./config/swagger.js";
@@ -11,6 +12,7 @@ const app = express();
 app.use(express.json());
 app.use("/tarefa", tarefaRoutes)
 app.use("/atributo", atributoRoutes)
+app.use("/token", tokenRoutes)
 app.use("/", home)
 swagger(app);
 

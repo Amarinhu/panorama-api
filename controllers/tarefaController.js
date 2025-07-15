@@ -8,8 +8,8 @@ export function metodoGet(req, res) {
         if (err) {
             console.error("Erro na consulta: ", err);
             res.status(500).send("Erro ao consultar o banco.")
-        } else {
-            res.json(tarefas)
         }
+        
+        res.status(200).json(tarefas)
     })
 }
