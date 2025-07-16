@@ -54,11 +54,10 @@ export function postToken(callback, nome = null, email = null, senha) {
                 const dtAgora = new Date();
 
                 const difDataMs = dtAgora - dtTokenBr;
-                const difDataHrs = difDataMs / 1000 / 60 / 60;
 
                 const tmpRestante = (1 * 60 * 60 * 1000) - difDataMs
 
-                if (difDataHrs <= 1) {
+                if (tmpRestante >= 1) {
                     callback(null, { idUsuario: idUsuario, token: primToken.token, tmpRestante :  tmpRestante })
                 } else {
                     deletaTokens(idUsuario)
