@@ -5,8 +5,8 @@ export function verToken(idUsuario, token) {
     const con = getConnection();
     const resultado = [];
     const sql =
-        `SELECT TOP 1 criado_em FROM token T
-        inner join usuario U on t.id_usuario = U.id
+        `SELECT TOP 1 T.criado_em FROM token T
+        inner join usuario U on T.id_usuario = U.id
     where T.token = @token and U.id = @id_usuario and U.ativo = 1 `
 
     const promise = new Promise((res, rej) => {

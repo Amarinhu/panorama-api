@@ -1,9 +1,10 @@
 import express from "express";
-import { metodoGet } from "../controllers/tarefaController.js";
+import { metodoGet, metodoPost } from "../controllers/tarefaController.js";
 
 const router = express.Router();
 
 router.get('/', metodoGet);
+router.post('/', metodoPost);
 
 export default router;
 

@@ -15,9 +15,8 @@ app.use(express.json());
 app.use("/", home)
 app.use("/token", tokenRoutes)
 
-app.use(tokenRetorno);
-app.use("/tarefa", tarefaRoutes)
-app.use("/atributo", atributoRoutes)
+app.use("/tarefa", tokenRetorno, tarefaRoutes)
+app.use("/atributo", tokenRetorno, atributoRoutes)
 
 swagger(app);
 

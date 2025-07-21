@@ -7,7 +7,7 @@ export function postToken(callback, nome = null, email = null, senha) {
     const resultado = [];
 
     const sql = `
-    SELECT 1 id, nome, email 
+    SELECT TOP 1 id, nome, email 
         FROM usuario 
     WHERE (senha = @senha) AND (email = @email OR nome = @nome)`
 
