@@ -4,7 +4,7 @@ import { agenteInfo } from "../utils/agenteInfo.js";
 export function metodoGet(req, res) {
     agenteInfo(req, 'GET');
 
-    getTarefa((err, tarefas) => {
+    getTarefa(req.body, (err, tarefas) => {
         if (err) {
             console.error("Erro na consulta: ", err);
             res.status(500).send("Erro ao consultar o banco.")

@@ -1,14 +1,17 @@
 import { Request, TYPES } from "tedious";
 import { getConnection } from "../config/db.js";
 
-export function getTarefa(callback) {
+export function getTarefa(reqbody, callback) {
     const con = getConnection();
     const resultado = [];
     const sql =
         `SELECT T.id, G.id, T.nome, T.descricao, T.dificuldade, T.concluido, 
         T.ativo, T.template, T.id_grupo 
             FROM TAREFA T
-        INNER JOIN GRUPO G ON T.ID_GRUPO = G.ID`
+        INNER JOIN GRUPO G ON T.ID_GRUPO = G.ID
+        INNER JOIN PERFIL P ON P.id = G.id_perfil
+        INNER JOIN USUARIO U ON U.id = P.id_usuario
+            WHERE U.id = @idUsuario`
 
     const requisicao = new Request(sql, (err, qtdLinhas) => {
         if (err) {
@@ -17,6 +20,8 @@ export function getTarefa(callback) {
             callback(null, resultado)
         }
     })
+
+    requisicao.addParameter("idUsuario", TYPES.Int, reqbody.idUsuario);
 
     requisicao.on("row", colunas => {
         const linha = {};
