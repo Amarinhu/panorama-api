@@ -5,8 +5,8 @@ export function getTarefa(reqbody, callback) {
     const con = getConnection();
     const resultado = [];
     const sql =
-        `SELECT T.id, G.id, T.nome, T.descricao, T.dificuldade, T.concluido, 
-        T.ativo, T.template, T.id_grupo 
+        `SELECT T.id, G.id as id_grupo, T.nome, T.descricao, T.dificuldade, T.concluido, 
+        T.ativo, T.template, T.id_grupo, T.intervalo
             FROM TAREFA T
         INNER JOIN GRUPO G ON T.ID_GRUPO = G.ID
         INNER JOIN PERFIL P ON P.id = G.id_perfil
@@ -126,6 +126,40 @@ export function putTarefa(reqbody, callback) {
     requisicao.addParameter("template", TYPES.Bit, tarefa.template)
     requisicao.addParameter("intervalo", TYPES.Int, tarefa.intervalo)
     requisicao.addParameter("id_grupo", TYPES.Int, tarefa.id_grupo)
+
+    requisicao.on("row", colunas => {
+        const linha = {};
+        colunas.forEach(coluna => {
+            linha[coluna.metadata.colName] = coluna.value
+        })
+        resultado.push(linha)
+    })
+
+    con.execSql(requisicao)
+}
+
+export function deleteTarefa(reqbody, callback) {
+    const con = getConnection();
+    const resultado = [];
+    const sql =
+        `DELETE T 
+        OUTPUT deleted.id
+        FROM TAREFA AS T
+        INNER JOIN GRUPO AS G ON T.ID_GRUPO = G.ID
+        INNER JOIN PERFIL AS P ON P.id = G.id_perfil
+        INNER JOIN USUARIO AS U ON U.id = P.id_usuario
+            WHERE U.id = @idUsuario AND T.id = @id`
+
+    const requisicao = new Request(sql, (err) => {
+        if (err) {
+            callback(err)
+        } else {
+            callback(null, resultado)
+        }
+    })
+
+    requisicao.addParameter("idUsuario", TYPES.Int, reqbody.idUsuario);
+    requisicao.addParameter("id", TYPES.Int, reqbody.id);
 
     requisicao.on("row", colunas => {
         const linha = {};
