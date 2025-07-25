@@ -6,7 +6,7 @@ export function getTarefa(reqbody, callback) {
     const resultado = [];
     const sql =
         `SELECT T.id, G.id as id_grupo, T.nome, T.descricao, T.dificuldade, T.concluido, 
-        T.ativo, T.template, T.id_grupo, T.intervalo
+        T.ativo, T.template, T.id_grupo, T.intervalo, T.inicio, T.fim
             FROM TAREFA T
         INNER JOIN GRUPO G ON T.ID_GRUPO = G.ID
         INNER JOIN PERFIL P ON P.id = G.id_perfil
@@ -48,11 +48,11 @@ export function postTarefa(reqbody, callback) {
         BEGIN
             INSERT INTO tarefa 
                 (nome, descricao, dificuldade, concluido, ativo, template, 
-                intervalo, id_grupo, criado_em, atualizado_em) 
+                intervalo, id_grupo, criado_em, atualizado_em, inicio, fim) 
             OUTPUT INSERTED.id
             VALUES 
                 (@nome, @descricao, @dificuldade, @concluido, @ativo, @template, 
-                @intervalo, @id_grupo, GETDATE(), GETDATE()) 
+                @intervalo, @id_grupo, GETDATE(), GETDATE(), @inicio, @fim) 
         END `;
 
     const requisicao = new Request(sql, (err, qtdLinhas) => {
@@ -74,6 +74,8 @@ export function postTarefa(reqbody, callback) {
     requisicao.addParameter("template", TYPES.Bit, tarefa.template)
     requisicao.addParameter("intervalo", TYPES.Int, tarefa.intervalo)
     requisicao.addParameter("id_grupo", TYPES.Int, tarefa.id_grupo)
+    requisicao.addParameter("inicio", TYPES.VarChar, tarefa.inicio)
+    requisicao.addParameter("fim", TYPES.VarChar, tarefa.fim)
 
     requisicao.on("row", colunas => {
         const linha = {};
@@ -101,7 +103,8 @@ export function putTarefa(reqbody, callback) {
             UPDATE tarefa SET 
                 nome = @nome, descricao = @descricao, dificuldade = @dificuldade, 
                 concluido = @concluido, ativo = @ativo, template = @template, 
-                intervalo = @intervalo, id_grupo = @id_grupo, atualizado_em = GETDATE() 
+                intervalo = @intervalo, id_grupo = @id_grupo, atualizado_em = GETDATE(),
+                inicio = @inicio, fim = @fim 
             OUTPUT INSERTED.id
                 WHERE id = @id
         END `;
@@ -126,6 +129,8 @@ export function putTarefa(reqbody, callback) {
     requisicao.addParameter("template", TYPES.Bit, tarefa.template)
     requisicao.addParameter("intervalo", TYPES.Int, tarefa.intervalo)
     requisicao.addParameter("id_grupo", TYPES.Int, tarefa.id_grupo)
+    requisicao.addParameter("inicio", TYPES.VarChar, tarefa.inicio)
+    requisicao.addParameter("fim", TYPES.VarChar, tarefa.fim)
 
     requisicao.on("row", colunas => {
         const linha = {};

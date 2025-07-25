@@ -18,13 +18,13 @@ export function metodoPost(req, res) {
     agenteInfo(req, 'POST');
 
     postTarefa(req.body, (err, tarefas) => {
-        if (tarefas == undefined) {
-            return res.status(400).send("Esse grupo não pertence a esse usuário")
-        }
-
         if (err) {
             console.error("Erro na consulta: ", err);
             return res.status(500).send("Erro ao consultar o banco.")
+        }
+
+        if (tarefas == undefined) {
+            return res.status(400).send("Esse grupo não pertence a esse usuário")
         }
 
         return res.status(200).json(tarefas)
@@ -35,13 +35,13 @@ export function metodoPut(req, res) {
     agenteInfo(req, 'PUT');
 
     putTarefa(req.body, (err, tarefas) => {
-        if (tarefas == undefined) {
-            return res.status(400).send("Esse grupo não pertence a esse usuário")
-        }
-
         if (err) {
             console.error("Erro na consulta: ", err);
             return res.status(500).send("Erro ao consultar o banco.")
+        }
+
+        if (tarefas == undefined) {
+            return res.status(400).send("Esse grupo não pertence a esse usuário")
         }
 
         return res.status(200).json(tarefas)

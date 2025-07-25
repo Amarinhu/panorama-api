@@ -80,7 +80,9 @@ CREATE TABLE atributo (
     criado_em DATETIME NOT NULL,
     atualizado_em DATETIME NOT NULL,
     ativo BIT NOT NULL,
-    PRIMARY KEY(id)
+    id_perfil INT NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY (id_perfil) REFERENCES perfil(id) 
 );
 
 CREATE TABLE tarefa_atributo (

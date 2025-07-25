@@ -1,6 +1,6 @@
 USE panorama;
 
--- Usu·rio
+-- Usu√°rio 1: Cipresto
 INSERT INTO usuario (nome, senha, criado_em, atualizado_em, ativo)
 VALUES 
     ('Cipresto', 
@@ -8,102 +8,126 @@ VALUES
     GETDATE(), 
     GETDATE(), 
     1);
+DECLARE @usuario1_id INT = SCOPE_IDENTITY();
 
-DECLARE @usuario_id INT = SCOPE_IDENTITY();
-
--- Perfil
+-- Perfis de Cipresto
 INSERT INTO perfil (id_usuario, nome, foto, email, descricao, criado_em, atualizado_em, ativo)
 VALUES 
-    (@usuario_id, 
-    'Arthur', 
-    NULL, 
-    'arthur@example.com', 
-    'Perfil principal de Arthur', 
+    (@usuario1_id, 'Arthur', NULL, 'arthur@example.com', 'Perfil principal de Arthur', GETDATE(), GETDATE(), 1),
+    (@usuario1_id, 'Beatriz', NULL, 'beatriz@example.com', 'Segundo perfil de Cipresto', GETDATE(), GETDATE(), 1);
+
+DECLARE @perfil1_id INT = SCOPE_IDENTITY() - 1; -- Arthur
+DECLARE @perfil2_id INT = SCOPE_IDENTITY();     -- Beatriz
+
+-- Usu√°rio 2: Lucerna
+INSERT INTO usuario (nome, senha, criado_em, atualizado_em, ativo)
+VALUES 
+    ('Lucerna', 
+    '$2a$12$SOMEOTHERSALTEDHASHEDPASSWORDXxXxXxXxXxXxXxXxXx', 
     GETDATE(), 
     GETDATE(), 
     1);
+DECLARE @usuario2_id INT = SCOPE_IDENTITY();
 
-DECLARE @perfil_id INT = SCOPE_IDENTITY();
-
--- Grupos
-INSERT INTO grupo (id_perfil, nome, descricao, criado_em, atualizado_em, ativo)
+INSERT INTO perfil (id_usuario, nome, foto, email, descricao, criado_em, atualizado_em, ativo)
 VALUES 
-    (@perfil_id, 'Weekly', 'Tarefas semanais', GETDATE(), GETDATE(), 1),
-    (@perfil_id, 'Daily', 'Tarefas di·rias', GETDATE(), GETDATE(), 1),
-    (@perfil_id, 'Monthly', 'Tarefas mensais', GETDATE(), GETDATE(), 1);
+    (@usuario2_id, 'Clara', NULL, 'clara@example.com', 'Perfil de Lucerna', GETDATE(), GETDATE(), 1);
+DECLARE @perfil3_id INT = SCOPE_IDENTITY();
 
-DECLARE @grupo_weekly INT, @grupo_daily INT, @grupo_monthly INT;
+-- ===== Macro para Grupos, Atributos e Tarefas =====
+-- Cria√ß√£o de grupos
+DECLARE @perfil_id INT;
+DECLARE @grupoW INT, @grupoD INT, @grupoM INT;
 
-SELECT TOP 1 @grupo_weekly = id FROM grupo WHERE nome = 'Weekly' AND id_perfil = @perfil_id;
-SELECT TOP 1 @grupo_daily = id FROM grupo WHERE nome = 'Daily' AND id_perfil = @perfil_id;
-SELECT TOP 1 @grupo_monthly = id FROM grupo WHERE nome = 'Monthly' AND id_perfil = @perfil_id;
+DECLARE perfil_cursor CURSOR FOR 
+SELECT id FROM perfil WHERE id IN (@perfil1_id, @perfil2_id, @perfil3_id);
 
--- Atributos D&D
-INSERT INTO atributo (nome, icone, xp, criado_em, atualizado_em, ativo) VALUES
-    ('ForÁa', '.\img\icone-forca.png', 0, GETDATE(), GETDATE(), 1),
-    ('Destreza', '.\img\icone-destreza.png', 0, GETDATE(), GETDATE(), 1),
-    ('ConstituiÁ„o', '.\img\icone-constituicao.png', 0, GETDATE(), GETDATE(), 1),
-    ('InteligÍncia', '.\img\icone-inteligencia.png', 0, GETDATE(), GETDATE(), 1),
-    ('Sabedoria', '.\img\icone-sabedoria.png', 0, GETDATE(), GETDATE(), 1),
-    ('Carisma', '.\img\icone-carisma.png', 0, GETDATE(), GETDATE(), 1);
+OPEN perfil_cursor;
+FETCH NEXT FROM perfil_cursor INTO @perfil_id;
 
-DECLARE @forca INT, @destreza INT, @constituicao INT, @inteligencia INT, @sabedoria INT, @carisma INT;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- Grupos
+    INSERT INTO grupo (id_perfil, nome, descricao, criado_em, atualizado_em, ativo)
+    VALUES 
+        (@perfil_id, 'Weekly', 'Tarefas semanais', GETDATE(), GETDATE(), 1),
+        (@perfil_id, 'Daily', 'Tarefas di√°rias', GETDATE(), GETDATE(), 1),
+        (@perfil_id, 'Monthly', 'Tarefas mensais', GETDATE(), GETDATE(), 1);
 
-SELECT @forca = id FROM atributo WHERE nome = 'ForÁa';
-SELECT @destreza = id FROM atributo WHERE nome = 'Destreza';
-SELECT @constituicao = id FROM atributo WHERE nome = 'ConstituiÁ„o';
-SELECT @inteligencia = id FROM atributo WHERE nome = 'InteligÍncia';
-SELECT @sabedoria = id FROM atributo WHERE nome = 'Sabedoria';
-SELECT @carisma = id FROM atributo WHERE nome = 'Carisma';
+    SELECT TOP 1 @grupoW = id FROM grupo WHERE nome = 'Weekly' AND id_perfil = @perfil_id;
+    SELECT TOP 1 @grupoD = id FROM grupo WHERE nome = 'Daily' AND id_perfil = @perfil_id;
+    SELECT TOP 1 @grupoM = id FROM grupo WHERE nome = 'Monthly' AND id_perfil = @perfil_id;
 
--- Tarefas Weekly
-INSERT INTO tarefa (id_grupo, nome, inicio, fim, descricao, dificuldade, concluido, criado_em, atualizado_em, ativo, template, intervalo)
-VALUES 
-    (@grupo_weekly, 'Limpar garagem', GETDATE(), NULL, 'Organizar e limpar a garagem', 3, 0, GETDATE(), GETDATE(), 1, 0, 7),
-    (@grupo_weekly, 'Revisar orÁamento', GETDATE(), NULL, 'Verificar gastos da semana', 2, 0, GETDATE(), GETDATE(), 1, 0, 7);
+    -- Atributos
+    DECLARE @atr_for INT, @atr_des INT, @atr_con INT, @atr_int INT, @atr_sab INT, @atr_car INT;
 
-DECLARE @tarefa1 INT, @tarefa2 INT;
-SELECT TOP 1 @tarefa1 = id FROM tarefa WHERE nome = 'Limpar garagem' AND id_grupo = @grupo_weekly;
-SELECT TOP 1 @tarefa2 = id FROM tarefa WHERE nome = 'Revisar orÁamento' AND id_grupo = @grupo_weekly;
+    INSERT INTO atributo (nome, icone, xp, criado_em, atualizado_em, ativo, id_perfil) VALUES
+        ('For√ßa', '.\img\icone-forca.png', 0, GETDATE(), GETDATE(), 1, @perfil_id),
+        ('Destreza', '.\img\icone-destreza.png', 0, GETDATE(), GETDATE(), 1, @perfil_id),
+        ('Constitui√ß√£o', '.\img\icone-constituicao.png', 0, GETDATE(), GETDATE(), 1, @perfil_id),
+        ('Intelig√™ncia', '.\img\icone-inteligencia.png', 0, GETDATE(), GETDATE(), 1, @perfil_id),
+        ('Sabedoria', '.\img\icone-sabedoria.png', 0, GETDATE(), GETDATE(), 1, @perfil_id),
+        ('Carisma', '.\img\icone-carisma.png', 0, GETDATE(), GETDATE(), 1, @perfil_id);
 
-INSERT INTO tarefa_atributo (id_tarefa, id_atributo) 
-VALUES 
-    (@tarefa1, @forca),
-    (@tarefa2, @inteligencia);
+    SELECT 
+        @atr_for = MAX(CASE WHEN nome = 'For√ßa' THEN id END),
+        @atr_des = MAX(CASE WHEN nome = 'Destreza' THEN id END),
+        @atr_con = MAX(CASE WHEN nome = 'Constitui√ß√£o' THEN id END),
+        @atr_int = MAX(CASE WHEN nome = 'Intelig√™ncia' THEN id END),
+        @atr_sab = MAX(CASE WHEN nome = 'Sabedoria' THEN id END),
+        @atr_car = MAX(CASE WHEN nome = 'Carisma' THEN id END)
+    FROM atributo WHERE id_perfil = @perfil_id;
 
--- Tarefas Daily
-INSERT INTO tarefa (id_grupo, nome, inicio, fim, descricao, dificuldade, concluido, criado_em, atualizado_em, ativo, template, intervalo)
-VALUES 
-    (@grupo_daily, 'Meditar', GETDATE(), NULL, 'Meditar por 10 minutos', 1, 0, GETDATE(), GETDATE(), 1, 0, 1),
-    (@grupo_daily, 'Alongar', GETDATE(), NULL, 'Alongamento matinal', 1, 0, GETDATE(), GETDATE(), 1, 0, 1);
+    -- Weekly Tarefas
+    DECLARE @t1 INT, @t2 INT, @t3 INT, @t4 INT;
 
-DECLARE @tarefa3 INT, @tarefa4 INT;
-SELECT TOP 1 @tarefa3 = id FROM tarefa WHERE nome = 'Meditar' AND id_grupo = @grupo_daily;
-SELECT TOP 1 @tarefa4 = id FROM tarefa WHERE nome = 'Alongar' AND id_grupo = @grupo_daily;
+    INSERT INTO tarefa (id_grupo, nome, inicio, fim, descricao, dificuldade, concluido, criado_em, atualizado_em, ativo, template, intervalo)
+    VALUES 
+        (@grupoW, 'Organizar arm√°rio', GETDATE(), NULL, 'Limpar e reorganizar arm√°rio', 2, 0, GETDATE(), GETDATE(), 1, 0, 7),
+        (@grupoW, 'Planejar semana', GETDATE(), NULL, 'Planejar agenda semanal', 3, 0, GETDATE(), GETDATE(), 1, 0, 7);
 
-INSERT INTO tarefa_atributo (id_tarefa, id_atributo) 
-VALUES 
-    (@tarefa3, @sabedoria),
-    (@tarefa4, @destreza);
+    SELECT @t1 = id FROM tarefa WHERE nome = 'Organizar arm√°rio' AND id_grupo = @grupoW;
+    SELECT @t2 = id FROM tarefa WHERE nome = 'Planejar semana' AND id_grupo = @grupoW;
 
--- Tarefas Monthly
-INSERT INTO tarefa (id_grupo, nome, inicio, fim, descricao, dificuldade, concluido, criado_em, atualizado_em, ativo, template, intervalo)
-VALUES 
-    (@grupo_monthly, 'Reuni„o familiar', GETDATE(), NULL, 'Organizar encontro familiar', 2, 0, GETDATE(), GETDATE(), 1, 0, 30),
-    (@grupo_monthly, 'Curso online', GETDATE(), NULL, 'Completar mÛdulo do curso online', 4, 0, GETDATE(), GETDATE(), 1, 0, 30);
+    INSERT INTO tarefa_atributo (id_tarefa, id_atributo)
+    VALUES 
+        (@t1, @atr_for),
+        (@t2, @atr_int);
 
-DECLARE @tarefa5 INT, @tarefa6 INT;
-SELECT TOP 1 @tarefa5 = id FROM tarefa WHERE nome = 'Reuni„o familiar' AND id_grupo = @grupo_monthly;
-SELECT TOP 1 @tarefa6 = id FROM tarefa WHERE nome = 'Curso online' AND id_grupo = @grupo_monthly;
+    -- Daily Tarefas
+    INSERT INTO tarefa (id_grupo, nome, inicio, fim, descricao, dificuldade, concluido, criado_em, atualizado_em, ativo, template, intervalo)
+    VALUES 
+        (@grupoD, 'Beber √°gua', GETDATE(), NULL, 'Tomar 2 litros de √°gua', 1, 0, GETDATE(), GETDATE(), 1, 0, 1),
+        (@grupoD, 'Exerc√≠cio leve', GETDATE(), NULL, 'Exerc√≠cio por 20 minutos', 2, 0, GETDATE(), GETDATE(), 1, 0, 1);
 
--- Uma tarefa com 2 atributos
-INSERT INTO tarefa_atributo (id_tarefa, id_atributo) 
-VALUES 
-    (@tarefa5, @carisma),
-    (@tarefa5, @sabedoria);
+    SELECT @t3 = id FROM tarefa WHERE nome = 'Beber √°gua' AND id_grupo = @grupoD;
+    SELECT @t4 = id FROM tarefa WHERE nome = 'Exerc√≠cio leve' AND id_grupo = @grupoD;
 
--- Outra tarefa com 2 atributos
-INSERT INTO tarefa_atributo (id_tarefa, id_atributo) 
-VALUES 
-    (@tarefa6, @inteligencia),
-    (@tarefa6, @constituicao);
+    INSERT INTO tarefa_atributo (id_tarefa, id_atributo)
+    VALUES 
+        (@t3, @atr_sab),
+        (@t4, @atr_des);
+
+    -- Monthly Tarefas
+    DECLARE @t5 INT, @t6 INT;
+
+    INSERT INTO tarefa (id_grupo, nome, inicio, fim, descricao, dificuldade, concluido, criado_em, atualizado_em, ativo, template, intervalo)
+    VALUES 
+        (@grupoM, 'Atualizar curr√≠culo', GETDATE(), NULL, 'Revisar e atualizar curr√≠culo', 3, 0, GETDATE(), GETDATE(), 1, 0, 30),
+        (@grupoM, 'Fazer check-up m√©dico', GETDATE(), NULL, 'Exames e consultas de rotina', 4, 0, GETDATE(), GETDATE(), 1, 0, 30);
+
+    SELECT @t5 = id FROM tarefa WHERE nome = 'Atualizar curr√≠culo' AND id_grupo = @grupoM;
+    SELECT @t6 = id FROM tarefa WHERE nome = 'Fazer check-up m√©dico' AND id_grupo = @grupoM;
+
+    INSERT INTO tarefa_atributo (id_tarefa, id_atributo)
+    VALUES 
+        (@t5, @atr_car),
+        (@t5, @atr_int),
+        (@t6, @atr_con),
+        (@t6, @atr_sab);
+
+    FETCH NEXT FROM perfil_cursor INTO @perfil_id;
+END
+
+CLOSE perfil_cursor;
+DEALLOCATE perfil_cursor;
